@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/components/my_drawer.dart';
+import 'package:music_player/components/neu_box.dart';
 import 'package:music_player/models/playlist_provider.dart';
 import 'package:music_player/models/song.dart';
 import 'package:music_player/pages/song_page.dart';
@@ -30,17 +31,20 @@ class _HomePageState extends State<HomePage> {
     playlistProvider.currentSongIndex = songIndex;
 
     // navigate to song page
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SongPage()),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => SongPage()),
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(title: const Text('P L A Y L I S T')),
+      appBar: AppBar(
+        title: const Text('P L A Y L I S T'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
       drawer: const MyDrawer(),
       body: Consumer<PlaylistProvider>(
         builder: (context, value, child) {
@@ -55,16 +59,53 @@ class _HomePageState extends State<HomePage> {
               final Song song = playlist[index];
 
               // return list tile UI
-              return ListTile(
-                title: Text(song.songName),
-                subtitle: Text(song.artistName),
-                leading: Image.asset(song.albumArtImagePath),
-                onTap: () => goToSong(index),
+              return Card(
+                child: ListTile(
+                  title: Text(song.songName),
+                  subtitle: Text(song.artistName),
+                  leading: Image.asset(song.albumArtImagePath),
+                  onTap: () => goToSong(index),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.zero),
+                ),
+                shadowColor: Theme.of(context).colorScheme.inversePrimary,
               );
             },
           );
         },
       ),
+
+      // bottom song tile
+      floatingActionButton: Consumer<PlaylistProvider>(
+        builder: (context, value, child) {
+          if (value.currentSongIndex != null) {
+            final currSong = value.playList[value.currentSongIndex!];
+            return Card(
+              color: Theme.of(context).colorScheme.secondary,
+              child: ListTile(
+                leading: Image.asset(currSong.albumArtImagePath),
+                title: Text(currSong.songName),
+                subtitle: Text(currSong.artistName),
+                trailing: GestureDetector(
+                  child: Icon(value.isPlaying ? Icons.pause : Icons.play_arrow),
+                  onTap: value.pauseOrResume,
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SongPage()),
+                  );
+                },
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

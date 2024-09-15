@@ -21,7 +21,7 @@ class SongPage extends StatelessWidget {
         final playlist = value.playList;
 
         // get curr song index
-        final currSong = playlist[value.currentSongIndex];
+        final currSong = playlist[value.currentSongIndex!];
 
         // return scaffold UI
         return Scaffold(

@@ -31,7 +31,7 @@ class PlaylistProvider extends ChangeNotifier {
   ];
 
   // current playing song index
-  int _currentSongIndex = 0;
+  int? _currentSongIndex;
 
   /*
 
@@ -56,7 +56,7 @@ class PlaylistProvider extends ChangeNotifier {
 
   // play the song
   void play() async {
-    final String path = _playlist[currentSongIndex].audioPath;
+    final String path = _playlist[currentSongIndex!].audioPath;
     await _audioPlayer.stop(); // stop any song if currently playing
     await _audioPlayer.play(AssetSource(path)); // play new song
     _isPlaying = true;
@@ -93,7 +93,7 @@ class PlaylistProvider extends ChangeNotifier {
 
   // play next song
   void playNextSong() {
-    currentSongIndex = (_currentSongIndex + 1) % _playlist.length;
+    currentSongIndex = (_currentSongIndex! + 1) % _playlist.length;
   }
 
   // play prev song
@@ -102,7 +102,7 @@ class PlaylistProvider extends ChangeNotifier {
     if (_currentDuration.inSeconds > 2) {
       seek(Duration.zero);
     } else {
-      currentSongIndex = (_currentSongIndex - 1) % _playlist.length;
+      currentSongIndex = (_currentSongIndex! - 1) % _playlist.length;
     }
   }
 
@@ -135,7 +135,7 @@ class PlaylistProvider extends ChangeNotifier {
   */
 
   List<Song> get playList => _playlist;
-  int get currentSongIndex => _currentSongIndex;
+  int? get currentSongIndex => _currentSongIndex;
   bool get isPlaying => _isPlaying;
   Duration get currentDuration => _currentDuration;
   Duration get totalDuration => _totalDuration;
@@ -146,7 +146,7 @@ class PlaylistProvider extends ChangeNotifier {
 
   */
 
-  set currentSongIndex(int newIndex) {
+  set currentSongIndex(int? newIndex) {
     // update index
     _currentSongIndex = newIndex;
 
